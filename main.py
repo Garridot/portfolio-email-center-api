@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify, redirect
 from flask_mail import Mail, Message
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
+from upstash_redis import Redis
 from markupsafe import escape
 from dotenv import load_dotenv
 from functools import wraps
@@ -29,10 +30,19 @@ mail = Mail(app)
 PERSONAL_EMAIL = os.getenv('PERSONAL_EMAIL')
 API_KEY = os.getenv('API_KEY')
 
+# Configure Upstash Redis
+UPSTASH_REDIS_REST_URL = os.getenv('UPSTASH_REDIS_REST_URL')
+UPSTASH_REDIS_REST_TOKEN = os.getenv('UPSTASH_REDIS_REST_TOKEN')
+
+redis_client = Redis(url=UPSTASH_REDIS_REST_URL, token=UPSTASH_REDIS_REST_TOKEN)
+
 limiter = Limiter(
     key_func=get_remote_address,
-    app=app,
-    default_limits=["200 per day", "50 per hour"]
+    # app=app,
+    storage_uri=UPSTASH_REDIS_REST_URL,
+    strategy="fixed-window",
+    default_limits=["200 per day", "50 per hour"],
+    storage_options={"token": UPSTASH_REDIS_REST_TOKEN}
 )
 
 # Logging configuration
