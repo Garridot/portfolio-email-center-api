@@ -35,8 +35,7 @@ def send_email_api():
         return jsonify({'error': 'The email address is invalid.'}), 400      
 
     if len(message.strip()) == 0:   
-        return jsonify({'error': 'The message cannot be empty.'}), 400    
-
+        return jsonify({'error': 'The message cannot be empty.'}), 400  
 
     try:
         msg = Message(
@@ -48,7 +47,8 @@ def send_email_api():
         mail.send(msg)
         return jsonify({'success': 'The email was sent successfully.'}), 200
     except Exception as e:
-        return jsonify({'error': str(e)}), 500        
+        return jsonify({'error': str(e)}), 500  
+              
 
 if __name__ == '__main__':
     app.run(debug=True)
