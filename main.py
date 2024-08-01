@@ -88,6 +88,7 @@ def send_email_api():
     if len(message.strip()) == 0:   
         return jsonify({'error': 'The message cannot be empty.'}), 400 
 
+    message = f"Email from {email} via Email Center API.\n{message}"
     sanitized_message = escape(message)  
 
     try:
